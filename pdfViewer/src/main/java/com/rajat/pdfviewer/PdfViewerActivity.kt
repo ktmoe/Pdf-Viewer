@@ -184,6 +184,7 @@ class PdfViewerActivity : AppCompatActivity() {
         //Initiating PDf Viewer with URL
         try {
             binding.pdfView.initWithUrl(
+                FILE_TITLE,
                 fileUrl!!,
                 PdfQuality.NORMAL,
                 engine
@@ -209,8 +210,9 @@ class PdfViewerActivity : AppCompatActivity() {
                 true.showProgressBar()
             }
 
-            override fun onDownloadSuccess() {
+            override fun onDownloadSuccess(message: String) {
                 false.showProgressBar()
+                Toast.makeText(this@PdfViewerActivity, message, Toast.LENGTH_SHORT).show()
             }
 
             override fun onError(error: Throwable) {

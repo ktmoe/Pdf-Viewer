@@ -13,12 +13,12 @@ import java.net.URL
  * Created by Rajat on 11,July,2020
  */
 
-internal class PdfDownloader(url: String, private val listener: StatusListener) {
+internal class PdfDownloader(private val title: String, url: String, private val listener: StatusListener) {
     interface StatusListener {
         fun getContext(): Context
         fun onDownloadStart() {}
         fun onDownloadProgress(currentBytes: Long, totalBytes: Long) {}
-        fun onDownloadSuccess(absolutePath: String) {}
+        fun onDownloadSuccess(absolutePath: String, message: String) {}
         fun onError(error: Throwable) {}
     }
 
@@ -28,41 +28,45 @@ internal class PdfDownloader(url: String, private val listener: StatusListener) 
 
     private fun download(downloadUrl: String) {
         GlobalScope.launch(Dispatchers.Main) { listener.onDownloadStart() }
-        val outputFile = File(listener.getContext().cacheDir, "downloaded_pdf.pdf")
-        if (outputFile.exists())
-            outputFile.delete()
-        try {
-            val bufferSize = 8192
-            val url = URL(downloadUrl)
-            val connection = url.openConnection()
-            connection.connect()
+        val outputFile = File(listener.getContext().cacheDir, "$title.pdf")
+        var message = ""
+//            outputFile.delete()
+        if (!outputFile.exists()) {
+            message = "File doesn't exists."
+            try {
+                val bufferSize = 8192
+                val url = URL(downloadUrl)
+                val connection = url.openConnection()
+                connection.connect()
 
-            val totalLength = connection.contentLength
-            val inputStream = BufferedInputStream(url.openStream(), bufferSize)
-            val outputStream = outputFile.outputStream()
-            var downloaded = 0
+                val totalLength = connection.contentLength
+                val inputStream = BufferedInputStream(url.openStream(), bufferSize)
+                val outputStream = outputFile.outputStream()
+                var downloaded = 0
 
-            do {
-                val data = ByteArray(bufferSize)
-                val count = inputStream.read(data)
-                if (count == -1)
-                    break
-                if (totalLength > 0) {
-                    downloaded += bufferSize
-                    GlobalScope.launch(Dispatchers.Main) {
-                        listener.onDownloadProgress(
-                            downloaded.toLong(),
-                            totalLength.toLong()
-                        )
+                do {
+                    val data = ByteArray(bufferSize)
+                    val count = inputStream.read(data)
+                    if (count == -1)
+                        break
+                    if (totalLength > 0) {
+                        downloaded += bufferSize
+                        GlobalScope.launch(Dispatchers.Main) {
+                            listener.onDownloadProgress(
+                                downloaded.toLong(),
+                                totalLength.toLong()
+                            )
+                        }
                     }
-                }
-                outputStream.write(data, 0, count)
-            } while (true)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            GlobalScope.launch(Dispatchers.Main) { listener.onError(e) }
-            return
-        }
-        GlobalScope.launch(Dispatchers.Main) { listener.onDownloadSuccess(outputFile.absolutePath) }
+                    outputStream.write(data, 0, count)
+                } while (true)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                GlobalScope.launch(Dispatchers.Main) { listener.onError(e) }
+                return
+            }
+        } else  message = "File Reloaded."
+
+        GlobalScope.launch(Dispatchers.Main) { listener.onDownloadSuccess(outputFile.absolutePath, message) }
     }
 }

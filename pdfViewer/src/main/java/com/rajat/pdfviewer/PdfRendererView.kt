@@ -49,12 +49,13 @@ class PdfRendererView @JvmOverloads constructor(
     interface StatusCallBack {
         fun onDownloadStart() {}
         fun onDownloadProgress(progress: Int, downloadedBytes: Long, totalBytes: Long?) {}
-        fun onDownloadSuccess() {}
+        fun onDownloadSuccess(message: String) {}
         fun onError(error: Throwable) {}
         fun onPageChanged(currentPage: Int, totalPage: Int) {}
     }
 
     fun initWithUrl(
+        title: String,
         url: String,
         pdfQuality: PdfQuality = this.quality,
         engine: PdfEngine = this.engine
@@ -65,7 +66,7 @@ class PdfRendererView @JvmOverloads constructor(
             return
         }
 
-        PdfDownloader(url, object : PdfDownloader.StatusListener {
+        PdfDownloader(title, url, object : PdfDownloader.StatusListener {
             override fun getContext(): Context = context
             override fun onDownloadStart() {
                 statusListener?.onDownloadStart()
@@ -78,9 +79,9 @@ class PdfRendererView @JvmOverloads constructor(
                 statusListener?.onDownloadProgress(progress, currentBytes, totalBytes)
             }
 
-            override fun onDownloadSuccess(absolutePath: String) {
+            override fun onDownloadSuccess(absolutePath: String, message: String) {
                 initWithPath(absolutePath, pdfQuality)
-                statusListener?.onDownloadSuccess()
+                statusListener?.onDownloadSuccess(message)
             }
 
             override fun onError(error: Throwable) {
@@ -187,7 +188,7 @@ class PdfRendererView @JvmOverloads constructor(
     internal class PdfWebViewClient(private val statusListener: StatusCallBack?) : WebViewClient() {
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            statusListener?.onDownloadSuccess()
+            statusListener?.onDownloadSuccess("Pdf Web View.")
         }
 
         override fun onReceivedError(
