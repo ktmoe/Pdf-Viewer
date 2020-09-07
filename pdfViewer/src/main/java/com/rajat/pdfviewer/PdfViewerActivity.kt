@@ -206,6 +206,7 @@ class PdfViewerActivity : AppCompatActivity() {
                 totalBytes: Long?
             ) {
                 //Download is in progress
+                true.showProgressBar()
             }
 
             override fun onDownloadSuccess() {
