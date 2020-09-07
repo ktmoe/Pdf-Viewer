@@ -207,12 +207,11 @@ class PdfViewerActivity : AppCompatActivity() {
                 totalBytes: Long?
             ) {
                 //Download is in progress
-                true.showProgressBar()
             }
 
             override fun onDownloadSuccess(message: String) {
                 false.showProgressBar()
-                Toast.makeText(this@PdfViewerActivity, message, Toast.LENGTH_SHORT).show()
+                Log.d("PDFVIEWER", message)
             }
 
             override fun onError(error: Throwable) {

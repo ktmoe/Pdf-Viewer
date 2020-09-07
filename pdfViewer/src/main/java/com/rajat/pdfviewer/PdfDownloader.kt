@@ -1,6 +1,7 @@
 package com.rajat.pdfviewer
 
 import android.content.Context
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -33,6 +34,7 @@ internal class PdfDownloader(private val title: String, url: String, private val
 //            outputFile.delete()
         if (!outputFile.exists()) {
             message = "File doesn't exists."
+            Log.d("PDFVIEWER_DOWNLOAD", message)
             try {
                 val bufferSize = 8192
                 val url = URL(downloadUrl)
@@ -65,7 +67,10 @@ internal class PdfDownloader(private val title: String, url: String, private val
                 GlobalScope.launch(Dispatchers.Main) { listener.onError(e) }
                 return
             }
-        } else  message = "File Reloaded."
+        } else{
+            Log.d("PDFVIEWER_RELOADED", message)
+            message = "File Reloaded."
+        }
 
         GlobalScope.launch(Dispatchers.Main) { listener.onDownloadSuccess(outputFile.absolutePath, message) }
     }
