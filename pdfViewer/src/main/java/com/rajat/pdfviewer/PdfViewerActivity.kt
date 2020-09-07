@@ -261,7 +261,7 @@ class PdfViewerActivity : AppCompatActivity() {
             val fileName = intent.getStringExtra(FILE_TITLE)
             val fileUrl = intent.getStringExtra(FILE_URL)
             val filePath =
-                if (TextUtils.isEmpty(directoryName)) "/$fileName.pdf" else "/$directoryName/$fileName.pdf"
+                if (TextUtils.isEmpty(directoryName)) "$fileName.pdf" else "$directoryName/$fileName.pdf"
 
             try {
                 val downloadUrl = Uri.parse(fileUrl)
@@ -276,7 +276,7 @@ class PdfViewerActivity : AppCompatActivity() {
                 request.setDescription("Downloading $fileName")
                 request.setVisibleInDownloadsUi(true)
                 request.setDestinationInExternalPublicDir(
-                    getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString(),
+                    Environment.DIRECTORY_DOWNLOADS,
                     filePath
                 )
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
