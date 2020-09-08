@@ -25,6 +25,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.rajat.pdfviewer.databinding.ActivityPdfViewerBinding
+import com.rajat.pdfviewer.loading.ProgressDialog
 
 /**
  * Created by Rajat on 11,July,2020
@@ -40,8 +41,6 @@ class PdfViewerActivity : AppCompatActivity() {
     private var downloadManager: DownloadManager? = null
     private var downloadId: Long? = null
 
-    private var downloadingCallback : (Int)-> Unit = {}
-
     companion object {
         const val FILE_URL = "pdf_file_url"
         const val FILE_DIRECTORY = "pdf_file_directory"
@@ -51,7 +50,6 @@ class PdfViewerActivity : AppCompatActivity() {
         const val PERMISSION_CODE = 4040
         var engine = PdfEngine.INTERNAL
         var enableDownload = true
-
 
         fun buildIntent(
             context: Context?,
@@ -263,6 +261,9 @@ class PdfViewerActivity : AppCompatActivity() {
 
     private var runnable = Thread(Runnable {
         var downloading = true
+
+        ProgressDialog.showProgress(this)
+
         while (downloading) {
             val q = DownloadManager.Query()
             q.setFilterById(downloadId!!)
@@ -276,15 +277,12 @@ class PdfViewerActivity : AppCompatActivity() {
             val progress = (bytesDownloaded / bytesTotal) * 100
 
             runOnUiThread(Runnable {
-                downloadingCallback.invoke(progress)
+                ProgressDialog.setProgress(progress)
             })
+            ProgressDialog.hideLoadingProgress()
             cursor.close()
         }
     })
-
-    fun setDownloadingCallback(callback: (Int)-> Unit) {
-        downloadingCallback = callback
-    }
 
     private fun downloadPdf() {
         try {
