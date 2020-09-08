@@ -37,6 +37,11 @@ class PdfViewerActivity : AppCompatActivity() {
     private var menuItem: MenuItem? = null
     private var fileUrl: String? = null
 
+    private var downloadManager: DownloadManager? = null
+    private var downloadId: Long? = null
+
+    private var downloadingCallback : (Int)-> Unit = {}
+
     companion object {
         const val FILE_URL = "pdf_file_url"
         const val FILE_DIRECTORY = "pdf_file_directory"
@@ -256,6 +261,31 @@ class PdfViewerActivity : AppCompatActivity() {
         }
     }
 
+    private var runnable = Thread(Runnable {
+        var downloading = true
+        while (downloading) {
+            val q = DownloadManager.Query()
+            q.setFilterById(downloadId!!)
+            val cursor = downloadManager!!.query(q)
+            cursor.moveToFirst()
+            val bytesDownloaded = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
+            val bytesTotal = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
+
+            if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL)
+                downloading = false
+            val progress = (bytesDownloaded / bytesTotal) * 100
+
+            runOnUiThread(Runnable {
+                downloadingCallback.invoke(progress)
+            })
+            cursor.close()
+        }
+    })
+
+    fun setDownloadingCallback(callback: (Int)-> Unit) {
+        downloadingCallback = callback
+    }
+
     private fun downloadPdf() {
         try {
             val directoryName = intent.getStringExtra(FILE_DIRECTORY)
@@ -267,7 +297,7 @@ class PdfViewerActivity : AppCompatActivity() {
 
             try {
                 val downloadUrl = Uri.parse(fileUrl)
-                val downloadManger = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager?
+                downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager?
                 val request = DownloadManager.Request(downloadUrl)
                 request.setAllowedNetworkTypes(
                     DownloadManager.Request.NETWORK_WIFI or
@@ -283,7 +313,9 @@ class PdfViewerActivity : AppCompatActivity() {
                     onComplete,
                     IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
                 )
-                if (permissionGranted!!) downloadManger!!.enqueue(request)
+                if (permissionGranted!!) downloadId = downloadManager!!.enqueue(request)
+
+                runnable.run()
             } catch (e: Exception) {
                 Toast.makeText(
                     this,
