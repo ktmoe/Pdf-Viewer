@@ -9,11 +9,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val url = "http://139.59.115.149:5040/upload/epapers/node-handbook-(1).pdf"
+
         open_pdf.setOnClickListener {
             startActivity(
                 PdfViewerActivity.buildIntent(
                     this,
-                    "url",
+                    url,
                     false,
                     "title",
                     ""

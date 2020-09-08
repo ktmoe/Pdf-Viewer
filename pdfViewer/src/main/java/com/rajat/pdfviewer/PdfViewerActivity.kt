@@ -24,8 +24,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.rajat.pdfviewer.databinding.ActivityPdfViewerBinding
 import com.rajat.pdfviewer.loading.ProgressDialog
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.*
+import java.lang.Runnable
 
 /**
  * Created by Rajat on 11,July,2020
@@ -37,6 +43,8 @@ class PdfViewerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPdfViewerBinding
     private var menuItem: MenuItem? = null
     private var fileUrl: String? = null
+
+    private val progressLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
     private var downloadManager: DownloadManager? = null
     private var downloadId: Long? = null
@@ -106,6 +114,11 @@ class PdfViewerActivity : AppCompatActivity() {
                 ).show()
             }
         }
+
+        progressLiveData.observe(this, Observer {
+            if (it) ProgressDialog.showProgress(this)
+            else ProgressDialog.hideLoadingProgress()
+        })
 
     }
 
@@ -259,31 +272,6 @@ class PdfViewerActivity : AppCompatActivity() {
         }
     }
 
-    private var runnable = Thread(Runnable {
-        var downloading = true
-
-        ProgressDialog.showProgress(this)
-
-        while (downloading) {
-            val q = DownloadManager.Query()
-            q.setFilterById(downloadId!!)
-            val cursor = downloadManager!!.query(q)
-            cursor.moveToFirst()
-            val bytesDownloaded = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
-            val bytesTotal = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
-
-            if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL)
-                downloading = false
-            val progress = (bytesDownloaded / bytesTotal) * 100
-
-            runOnUiThread(Runnable {
-                ProgressDialog.setProgress(progress)
-            })
-            ProgressDialog.hideLoadingProgress()
-            cursor.close()
-        }
-    })
-
     private fun downloadPdf() {
         try {
             val directoryName = intent.getStringExtra(FILE_DIRECTORY)
@@ -313,7 +301,31 @@ class PdfViewerActivity : AppCompatActivity() {
                 )
                 if (permissionGranted!!) downloadId = downloadManager!!.enqueue(request)
 
-                runnable.run()
+                Single.just(true)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .subscribe(
+                        {
+                            var downloading = true
+                            progressLiveData.postValue(true)
+                            while (downloading) {
+                                val q = DownloadManager.Query()
+                                q.setFilterById(downloadId!!)
+                                val cursor = downloadManager!!.query(q)
+                                cursor.moveToFirst()
+                                val bytesDownloaded = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
+                                val bytesTotal = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
+
+                                if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
+                                    downloading = false
+                                    progressLiveData.postValue(false)
+                                }
+
+                                val progress = (bytesDownloaded / bytesTotal) * 100
+                                cursor.close()
+                            }
+                        },{}
+                    )
             } catch (e: Exception) {
                 Toast.makeText(
                     this,

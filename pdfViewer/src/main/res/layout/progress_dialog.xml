@@ -6,9 +6,25 @@
     android:layout_height="match_parent">
 
     <ProgressBar
-        android:id="@+id/progress_horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"/>
+
+<!--    <com.vaibhavlakhera.circularprogressview.CircularProgressView-->
+<!--        android:id="@+id/circularProgress"-->
+<!--        android:layout_width="150dp"-->
+<!--        android:layout_height="150dp"-->
+<!--        android:layout_gravity="center"-->
+<!--        app:animate="true"-->
+<!--        app:animateDuration="600"-->
+<!--        app:progressTextEnabled="true"-->
+<!--        app:progressTextType="percent"-->
+<!--        app:total="100"-->
+<!--        app:totalWidth="10dp"-->
+<!--        app:progressWidth="20dp"-->
+<!--        app:fillColor="@android:color/white"-->
+<!--        app:totalColor="@android:color/black"-->
+<!--        app:progressColor="@android:color/black"-->
+<!--        app:progressRoundCap="true"/>-->
 
 </LinearLayout>

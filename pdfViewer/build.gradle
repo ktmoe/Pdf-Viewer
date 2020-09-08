@@ -35,12 +35,12 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation "androidx.constraintlayout:constraintlayout:2.0.0-beta8"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.6'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.7'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    implementation 'com.github.jiang111:CProgressButton:v1.2.7'
-
+    implementation 'com.github.reactivex:rxkotlin:3.0.0'
+//    implementation 'com.github.VaibhavLakhera:Circular-Progress-View:0.1.0'
 }
