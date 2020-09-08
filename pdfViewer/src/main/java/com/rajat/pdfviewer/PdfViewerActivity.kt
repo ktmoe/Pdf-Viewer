@@ -276,7 +276,8 @@ class PdfViewerActivity : AppCompatActivity() {
                 request.setTitle(fileName)
                 request.setDescription("Downloading $fileName")
                 request.setVisibleInDownloadsUi(true)
-                request.setDestinationInExternalPublicDir(
+                request.setDestinationInExternalFilesDir(
+                    this,
                     getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.path,
                     filePath
                 )
