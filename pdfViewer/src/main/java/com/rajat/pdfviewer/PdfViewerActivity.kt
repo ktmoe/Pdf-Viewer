@@ -36,9 +36,11 @@ class PdfViewerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPdfViewerBinding
     private var menuItem: MenuItem? = null
     private var fileUrl: String? = null
+    private var baseDirectory: String? = null
 
     companion object {
         const val FILE_URL = "pdf_file_url"
+        const val BASE_DIRECTORY = "pad_base_directory"
         const val FILE_DIRECTORY = "pdf_file_directory"
         const val FILE_TITLE = "pdf_file_title"
         const val ENABLE_FILE_DOWNLOAD = "enable_download"
@@ -53,12 +55,14 @@ class PdfViewerActivity : AppCompatActivity() {
             pdfUrl: String?,
             isGoogleEngine: Boolean?,
             pdfTitle: String?,
+            baseDirectory: String?,
             directoryName: String?,
             enableDownload: Boolean = true
         ): Intent {
             val intent = Intent(context, PdfViewerActivity::class.java)
             intent.putExtra(FILE_URL, pdfUrl)
             intent.putExtra(FILE_TITLE, pdfTitle)
+            intent.putExtra(BASE_DIRECTORY, baseDirectory)
             intent.putExtra(FILE_DIRECTORY, directoryName)
             intent.putExtra(ENABLE_FILE_DOWNLOAD, enableDownload)
             intent.putExtra(IS_GOOGLE_ENGINE, isGoogleEngine)
@@ -72,6 +76,8 @@ class PdfViewerActivity : AppCompatActivity() {
 
         //Set binding to view
         binding = DataBindingUtil.setContentView(this, R.layout.activity_pdf_viewer)
+
+        baseDirectory = intent.extras!!.getString(BASE_DIRECTORY)
 
         setUpToolbar(
             intent.extras!!.getString(
@@ -276,9 +282,8 @@ class PdfViewerActivity : AppCompatActivity() {
                 request.setTitle(fileName)
                 request.setDescription("Downloading $fileName")
                 request.setVisibleInDownloadsUi(true)
-                request.setDestinationInExternalFilesDir(
-                    this,
-                    getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.path,
+                request.setDestinationInExternalPublicDir(
+                    baseDirectory,
                     filePath
                 )
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
