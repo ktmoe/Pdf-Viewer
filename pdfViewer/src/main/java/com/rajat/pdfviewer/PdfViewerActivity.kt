@@ -36,12 +36,13 @@ class PdfViewerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPdfViewerBinding
     private var menuItem: MenuItem? = null
     private var fileUrl: String? = null
-    private var baseDirectory: String? = null
+//    private var baseDirectory: String? = null
 
     companion object {
         const val FILE_URL = "pdf_file_url"
-        const val BASE_DIRECTORY = "pad_base_directory"
-        const val FILE_DIRECTORY = "pdf_file_directory"
+        const val FILE_URI = "pdf_file_uri"
+//        const val BASE_DIRECTORY = "pad_base_directory"
+//        const val FILE_DIRECTORY = "pdf_file_directory"
         const val FILE_TITLE = "pdf_file_title"
         const val ENABLE_FILE_DOWNLOAD = "enable_download"
         const val IS_GOOGLE_ENGINE = "is_google_engine"
@@ -53,17 +54,19 @@ class PdfViewerActivity : AppCompatActivity() {
         fun buildIntent(
             context: Context?,
             pdfUrl: String?,
+            pdfUri: String?,
             isGoogleEngine: Boolean?,
             pdfTitle: String?,
-            baseDirectory: String?,
-            directoryName: String?,
+//            baseDirectory: String?,
+//            directoryName: String?,
             enableDownload: Boolean = true
         ): Intent {
             val intent = Intent(context, PdfViewerActivity::class.java)
             intent.putExtra(FILE_URL, pdfUrl)
+            intent.putExtra(FILE_URI, pdfUri)
             intent.putExtra(FILE_TITLE, pdfTitle)
-            intent.putExtra(BASE_DIRECTORY, baseDirectory)
-            intent.putExtra(FILE_DIRECTORY, directoryName)
+//            intent.putExtra(BASE_DIRECTORY, baseDirectory)
+//            intent.putExtra(FILE_DIRECTORY, directoryName)
             intent.putExtra(ENABLE_FILE_DOWNLOAD, enableDownload)
             intent.putExtra(IS_GOOGLE_ENGINE, isGoogleEngine)
             return intent
@@ -76,8 +79,6 @@ class PdfViewerActivity : AppCompatActivity() {
 
         //Set binding to view
         binding = DataBindingUtil.setContentView(this, R.layout.activity_pdf_viewer)
-
-        baseDirectory = intent.extras!!.getString(BASE_DIRECTORY)
 
         setUpToolbar(
             intent.extras!!.getString(
@@ -264,11 +265,14 @@ class PdfViewerActivity : AppCompatActivity() {
 
     private fun downloadPdf() {
         try {
-            val directoryName = intent.getStringExtra(FILE_DIRECTORY)
+//            val directoryName = intent.getStringExtra(FILE_DIRECTORY)
             val fileName = intent.getStringExtra(FILE_TITLE)
             val fileUrl = intent.getStringExtra(FILE_URL)
-            val filePath =
-                if (TextUtils.isEmpty(directoryName)) "$fileName.pdf" else "$directoryName/$fileName.pdf"
+
+            val fileUri = Uri.parse(intent.getStringExtra(FILE_URI))
+
+//            val filePath =
+//                if (TextUtils.isEmpty(directoryName)) "$fileName.pdf" else "$directoryName/$fileName.pdf"
 
             try {
                 val downloadUrl = Uri.parse(fileUrl)
@@ -282,10 +286,7 @@ class PdfViewerActivity : AppCompatActivity() {
                 request.setTitle(fileName)
                 request.setDescription("Downloading $fileName")
                 request.setVisibleInDownloadsUi(true)
-                request.setDestinationInExternalPublicDir(
-                    baseDirectory,
-                    filePath
-                )
+                request.setDestinationUri(fileUri)
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 registerReceiver(
                     onComplete,
