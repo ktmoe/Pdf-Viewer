@@ -31,10 +31,8 @@ internal class PdfDownloader(private val title: String, url: String, private val
         GlobalScope.launch(Dispatchers.Main) { listener.onDownloadStart() }
         val outputFile = File(listener.getContext().cacheDir, "$title.pdf")
         var message = ""
-//            outputFile.delete()
         if (!outputFile.exists()) {
             message = "File doesn't exists."
-            Log.d("PDFVIEWER_DOWNLOAD", message)
             try {
                 val bufferSize = 8192
                 val url = URL(downloadUrl)
@@ -67,10 +65,7 @@ internal class PdfDownloader(private val title: String, url: String, private val
                 GlobalScope.launch(Dispatchers.Main) { listener.onError(e) }
                 return
             }
-        } else{
-            Log.d("PDFVIEWER_RELOADED", message)
-            message = "File Reloaded."
-        }
+        } else message = "File Reloaded."
 
         GlobalScope.launch(Dispatchers.Main) { listener.onDownloadSuccess(outputFile.absolutePath, message) }
     }

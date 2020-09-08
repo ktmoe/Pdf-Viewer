@@ -211,7 +211,6 @@ class PdfViewerActivity : AppCompatActivity() {
 
             override fun onDownloadSuccess(message: String) {
                 false.showProgressBar()
-                Log.d("PDFVIEWER", message)
             }
 
             override fun onError(error: Throwable) {
@@ -278,7 +277,7 @@ class PdfViewerActivity : AppCompatActivity() {
                 request.setDescription("Downloading $fileName")
                 request.setVisibleInDownloadsUi(true)
                 request.setDestinationInExternalPublicDir(
-                    Environment.DIRECTORY_DOWNLOADS,
+                    getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.path,
                     filePath
                 )
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
@@ -296,7 +295,7 @@ class PdfViewerActivity : AppCompatActivity() {
             }
 
         } catch (e: Exception) {
-            Log.e("Error", e.toString())
+            Toast.makeText(this, e.localizedMessage, Toast.LENGTH_SHORT).show()
         }
     }
 
