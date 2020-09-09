@@ -44,12 +44,12 @@ class ViewSuccess : View {
     }
 
     private fun init(attrs: AttributeSet) {
-        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.SuccessView)
+        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.ViewSuccess)
         val pColor: Int
         val strokeWidth: Float
         try {
-            pColor = typedArray.getColor(R.styleable.SuccessView_svStrokeColor, 0xA5DC86)
-            strokeWidth = typedArray.getFloat(R.styleable.SuccessView_svStrokeWidth, 2.5f)
+            pColor = typedArray.getColor(R.styleable.ViewSuccess_svStrokeColor, 0xA5DC86)
+            strokeWidth = typedArray.getFloat(R.styleable.ViewSuccess_svStrokeWidth, 2.5f)
         } finally {
             typedArray.recycle()
         }

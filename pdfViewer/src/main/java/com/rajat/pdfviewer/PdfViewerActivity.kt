@@ -228,11 +228,13 @@ class PdfViewerActivity : AppCompatActivity() {
             }
 
             override fun onError(error: Throwable) {
+                false.showProgressBar()
                 onPdfError()
             }
 
             override fun onPageChanged(currentPage: Int, totalPage: Int) {
                 //Page change. Not require
+                false.showProgressBar()
             }
 
         }
