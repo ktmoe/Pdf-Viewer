@@ -1,30 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:gravity="start|center_vertical"
+    android:padding="24dp">
 
-    <ProgressBar
+    <com.github.lzyzsd.circleprogress.DonutProgress
+        android:id="@+id/donutProgress"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_gravity="center"/>
-
-<!--    <com.vaibhavlakhera.circularprogressview.CircularProgressView-->
-<!--        android:id="@+id/circularProgress"-->
-<!--        android:layout_width="150dp"-->
-<!--        android:layout_height="150dp"-->
-<!--        android:layout_gravity="center"-->
-<!--        app:animate="true"-->
-<!--        app:animateDuration="600"-->
-<!--        app:progressTextEnabled="true"-->
-<!--        app:progressTextType="percent"-->
-<!--        app:total="100"-->
-<!--        app:totalWidth="10dp"-->
-<!--        app:progressWidth="20dp"-->
-<!--        app:fillColor="@android:color/white"-->
-<!--        app:totalColor="@android:color/black"-->
-<!--        app:progressColor="@android:color/black"-->
-<!--        app:progressRoundCap="true"/>-->
+        app:donut_finished_color="@android:color/black"
+        app:donut_unfinished_stroke_width="3dp"
+        app:donut_finished_stroke_width="3dp"
+        app:donut_text_color="@android:color/black" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:textColor="@android:color/black"
+        android:text="Saving Pdf..."/>
 
 </LinearLayout>

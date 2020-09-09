@@ -28,6 +28,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.rajat.pdfviewer.databinding.ActivityPdfViewerBinding
 import com.rajat.pdfviewer.loading.ProgressDialog
+import com.rajat.pdfviewer.success.SuccessDialog
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.*
@@ -44,7 +45,7 @@ class PdfViewerActivity : AppCompatActivity() {
     private var menuItem: MenuItem? = null
     private var fileUrl: String? = null
 
-    private val progressLiveData: MutableLiveData<Boolean> = MutableLiveData()
+    private val progressLiveData: MutableLiveData<Int> = MutableLiveData()
 
     private var downloadManager: DownloadManager? = null
     private var downloadId: Long? = null
@@ -116,8 +117,7 @@ class PdfViewerActivity : AppCompatActivity() {
         }
 
         progressLiveData.observe(this, Observer {
-            if (it) ProgressDialog.showProgress(this)
-            else ProgressDialog.hideLoadingProgress()
+            ProgressDialog.updateProgress(it, this)
         })
 
     }
@@ -263,12 +263,8 @@ class PdfViewerActivity : AppCompatActivity() {
 
     private var onComplete: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            Toast.makeText(
-                context,
-                "File is Downloaded Successfully",
-                Toast.LENGTH_SHORT
-            ).show()
-            context?.unregisterReceiver(this)
+            SuccessDialog.Builder(context!!, "Pdf Saved.") {}.show(supportFragmentManager, PdfViewerActivity::class.java.simpleName)
+            context.unregisterReceiver(this)
         }
     }
 
@@ -307,7 +303,6 @@ class PdfViewerActivity : AppCompatActivity() {
                     .subscribe(
                         {
                             var downloading = true
-                            progressLiveData.postValue(true)
                             while (downloading) {
                                 val q = DownloadManager.Query()
                                 q.setFilterById(downloadId!!)
@@ -318,10 +313,11 @@ class PdfViewerActivity : AppCompatActivity() {
 
                                 if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
                                     downloading = false
-                                    progressLiveData.postValue(false)
                                 }
 
-                                val progress = (bytesDownloaded / bytesTotal) * 100
+                                val progress =  if (bytesDownloaded == 0) 0 else (bytesDownloaded * 100) / bytesTotal
+                                progressLiveData.postValue(progress)
+                                Log.d("PROGRESS", "$progress, $bytesDownloaded, $bytesTotal")
                                 cursor.close()
                             }
                         },{}

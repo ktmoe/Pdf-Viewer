@@ -13,4 +13,8 @@
         <attr name="pdfView_showDivider" format="boolean" />
         <attr name="pdfView_divider" format="reference" />
     </declare-styleable>
+    <declare-styleable name="SuccessView">
+        <attr name="svStrokeColor" format="color|reference"/>
+        <attr name="svStrokeWidth" format="float"/>
+    </declare-styleable>
 </resources>
