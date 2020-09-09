@@ -212,7 +212,7 @@ class PdfViewerActivity : AppCompatActivity() {
 
         binding.pdfView.statusListener = object : PdfRendererView.StatusCallBack {
             override fun onDownloadStart() {
-//                true.showProgressBar()
+                true.showProgressBar()
             }
 
             override fun onDownloadProgress(
@@ -224,7 +224,7 @@ class PdfViewerActivity : AppCompatActivity() {
             }
 
             override fun onDownloadSuccess(message: String) {
-//                false.showProgressBar()
+                false.showProgressBar()
             }
 
             override fun onError(error: Throwable) {
@@ -234,7 +234,7 @@ class PdfViewerActivity : AppCompatActivity() {
 
             override fun onPageChanged(currentPage: Int, totalPage: Int) {
                 //Page change. Not require
-//                false.showProgressBar()
+                false.showProgressBar()
             }
 
         }
@@ -253,7 +253,7 @@ class PdfViewerActivity : AppCompatActivity() {
 
     private fun onPdfError() {
         Toast.makeText(this, "Pdf has been corrupted", Toast.LENGTH_SHORT).show()
-//        true.showProgressBar()
+        false.showProgressBar()
         finish()
     }
 
