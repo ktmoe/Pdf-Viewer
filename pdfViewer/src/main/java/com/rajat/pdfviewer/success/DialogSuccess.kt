@@ -10,12 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.rajat.pdfviewer.R
-import kotlinx.android.synthetic.main.view_success.*
+import kotlinx.android.synthetic.main.success_view.*
 
 /**
  * Created by ktmmoe on 08, September, 2020
  **/
-class SuccessDialog private constructor(ctx: Context, private val message: String = "", private val callback: () -> Unit = {}) : DialogFragment() {
+class DialogSuccess private constructor(ctx: Context, private val message: String = "", private val callback: () -> Unit = {}) : DialogFragment() {
 
     private val start: Long = 200
     private val duration: Long = 1000
@@ -26,7 +26,7 @@ class SuccessDialog private constructor(ctx: Context, private val message: Strin
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.view_success, container, false)
+        val view = inflater.inflate(R.layout.success_view, container, false)
         dialog?.let { dialog ->
             dialog.window?.let {
                 it.setLayout(
@@ -60,6 +60,6 @@ class SuccessDialog private constructor(ctx: Context, private val message: Strin
     }
 
     companion object {
-        fun Builder(ctx: Context, message: String, callback: () -> Unit) = SuccessDialog(ctx, message, callback)
+        fun Builder(ctx: Context, message: String, callback: () -> Unit) = DialogSuccess(ctx, message, callback)
     }
 }

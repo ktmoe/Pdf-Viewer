@@ -14,7 +14,7 @@ import com.rajat.pdfviewer.R
 /**
  * Created by ktmmoe on 08, September, 2020
  **/
-class SuccessView : View {
+class ViewSuccess : View {
 
     private var density = -1f
     private lateinit var paintOne: Paint

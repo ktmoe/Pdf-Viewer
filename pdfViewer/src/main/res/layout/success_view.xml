@@ -8,7 +8,7 @@
     android:padding="16dp"
     android:orientation="vertical">
 
-    <com.rajat.pdfviewer.success.SuccessView
+    <com.rajat.pdfviewer.success.ViewSuccess
             android:id="@+id/success_view"
             android:layout_width="75dp"
             android:layout_height="75dp"

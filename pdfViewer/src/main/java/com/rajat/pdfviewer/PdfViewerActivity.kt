@@ -28,11 +28,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.rajat.pdfviewer.databinding.ActivityPdfViewerBinding
 import com.rajat.pdfviewer.loading.ProgressDialog
-import com.rajat.pdfviewer.success.SuccessDialog
+import com.rajat.pdfviewer.success.DialogSuccess
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.coroutines.*
-import java.lang.Runnable
 
 /**
  * Created by Rajat on 11,July,2020
@@ -263,7 +261,7 @@ class PdfViewerActivity : AppCompatActivity() {
 
     private var onComplete: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            SuccessDialog.Builder(context!!, "Pdf Saved.") {}.show(supportFragmentManager, PdfViewerActivity::class.java.simpleName)
+            DialogSuccess.Builder(context!!, "Pdf Saved.") {}.show(supportFragmentManager, PdfViewerActivity::class.java.simpleName)
             context.unregisterReceiver(this)
         }
     }
