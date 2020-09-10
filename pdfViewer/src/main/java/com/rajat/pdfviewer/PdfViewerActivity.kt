@@ -52,6 +52,7 @@ class PdfViewerActivity : AppCompatActivity() {
         const val FILE_URL = "pdf_file_url"
         const val FILE_DIRECTORY = "pdf_file_directory"
         const val FILE_TITLE = "pdf_file_title"
+        const val SAVE_TITLE = "pdf_save_title"
         const val ENABLE_FILE_DOWNLOAD = "enable_download"
         const val IS_GOOGLE_ENGINE = "is_google_engine"
         const val PERMISSION_CODE = 4040
@@ -63,12 +64,14 @@ class PdfViewerActivity : AppCompatActivity() {
             pdfUrl: String?,
             isGoogleEngine: Boolean?,
             pdfTitle: String?,
+            saveTitle: String?,
             directoryName: String?,
             enableDownload: Boolean = true
         ): Intent {
             val intent = Intent(context, PdfViewerActivity::class.java)
             intent.putExtra(FILE_URL, pdfUrl)
             intent.putExtra(FILE_TITLE, pdfTitle)
+            intent.putExtra(SAVE_TITLE, saveTitle)
             intent.putExtra(FILE_DIRECTORY, directoryName)
             intent.putExtra(ENABLE_FILE_DOWNLOAD, enableDownload)
             intent.putExtra(IS_GOOGLE_ENGINE, isGoogleEngine)
@@ -272,10 +275,11 @@ class PdfViewerActivity : AppCompatActivity() {
         try {
             val directoryName = intent.getStringExtra(FILE_DIRECTORY)
             val fileName = intent.getStringExtra(FILE_TITLE)
+            val saveName = intent.getStringExtra(SAVE_TITLE)
             val fileUrl = intent.getStringExtra(FILE_URL)
 
             val filePath =
-                if (TextUtils.isEmpty(directoryName)) "$fileName.pdf" else "$directoryName/$fileName.pdf"
+                if (TextUtils.isEmpty(directoryName)) "$saveName.pdf" else "$directoryName/$saveName.pdf"
 
             try {
                 val downloadUrl = Uri.parse(fileUrl)
