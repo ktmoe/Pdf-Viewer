@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
                     this,
                     url,
                     false,
+                    "",
                     "title",
                     ""
                 )
