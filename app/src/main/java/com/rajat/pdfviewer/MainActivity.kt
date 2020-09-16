@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
                 PdfViewerActivity.buildIntent(
                     this,
                     url,
-                    true,
+                    false,
                     "title",
                     "title",
                     "",
