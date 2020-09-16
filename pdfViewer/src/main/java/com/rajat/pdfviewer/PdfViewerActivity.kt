@@ -292,9 +292,9 @@ class PdfViewerActivity : AppCompatActivity() {
                 request.setAllowedOverRoaming(true)
                 request.setTitle(fileName)
                 request.setDescription("Downloading $fileName")
-                request.setVisibleInDownloadsUi(true)
+                request.setVisibleInDownloadsUi(false)
                 request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, filePath)
-                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
                 registerReceiver(
                     onComplete,
                     IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
